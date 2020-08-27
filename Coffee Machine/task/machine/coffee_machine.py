@@ -1,16 +1,14 @@
-print("""
-Starting to make a coffee
-Grinding coffee beans
-Boiling water
-Mixing boiled water with crushed coffee beans
-Pouring coffee into the cup
-Pouring some milk into the cup
-Coffee is ready!
-""")
+water = int(input("Write how many ml of water the coffee machine has:"))
+milk = int(input("Write how many ml of milk the coffee machine has:"))
+beans = int(input("Write how many grams of coffee beans the coffee machine has:"))
+coffee_require = int(input("Write how many cups of coffee you will need:"))
 
-coffee_required = int(input("Write how many cups of coffee you will need:"))
-print("""
-For {} cups of coffee you will need:
-{} ml of water
-{} ml of milk
-{} g of coffee beans""".format(coffee_required, coffee_required*200, coffee_required*50, coffee_required*15))
+coffee_make = min([water//200, milk//50, beans//15])
+
+if coffee_make == coffee_require:
+    print("Yes, I can make that amount of coffee")
+elif coffee_make < coffee_require:
+    print("No, I can make only {} cups of coffee".format(coffee_make))
+else:
+    print("Yes, I can make that amount of coffee (and even {} more than that)".format(coffee_make-coffee_require))
+
