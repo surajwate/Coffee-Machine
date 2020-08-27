@@ -8,7 +8,7 @@ The coffee machine has:
 {} of milk
 {} of coffee beans
 {} of disposable cups
-{} of money\n""".format(*list(content.values())))
+${} of money\n""".format(*list(content.values())))
 
 
 def refill():
@@ -19,9 +19,17 @@ def refill():
     return refilled
 
 
-def update(content, updated_content) -> dict:
+def update(content, updated_content, act) -> dict:
+    content_before_update = content.copy()
     for keys in updated_content:
         content[keys] = content[keys] + updated_content[keys]
+    if min(list(content.values())[:4]) <= 0:
+        for key in content:
+            if content[key] <= 0:
+                print("Sorry, not enough {}!\n".format(key))
+                return content_before_update
+    if act == "buy":
+        print("I have enough resources, making you a coffee!\n")
     return content
 
 
@@ -37,18 +45,21 @@ def coffee_selection(ans: str) -> dict:
         return cappuccino
 
 
-status_display(machine_content)
-action = input("Write action (buy, fill, take):")
-
-if action == "buy":
-    answer = input("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:")
-    coffee_selected = coffee_selection(answer)
-    machine_content = update(machine_content, coffee_selected)
-elif action == "fill":
-    refill_content = refill()
-    machine_content = update(machine_content, refill_content)
-elif action == "take":
-    print("I gave you ${}".format(machine_content["money"]))
-    machine_content = update(machine_content, {"money": -machine_content["money"]})
-
-status_display(machine_content)
+while True:
+    action = input("Write action (buy, fill, take, remaining, exit):")
+    if action == "buy":
+        answer = input("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:")
+        if answer == "back":
+            continue
+        coffee_selected = coffee_selection(answer)
+        machine_content = update(machine_content, coffee_selected, action)
+    elif action == "fill":
+        refill_content = refill()
+        machine_content = update(machine_content, refill_content, action)
+    elif action == "take":
+        print("I gave you ${}".format(machine_content["money"]))
+        machine_content["money"] = 0
+    elif action == "remaining":
+        status_display(machine_content)
+    elif action == "exit":
+        break
